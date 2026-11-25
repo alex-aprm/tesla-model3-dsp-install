@@ -3,86 +3,76 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DSP amp install in a 2023 Model 3 RWD — no factory wires cut</title>
+<title>DSP amp install in a 2023 Model 3 RWD</title>
+<meta name="description" content="Build log: mounting, inrush-limited penthouse power and a plug-in T-harness for a Match UP 10DSP MK2 in a 2023 Tesla Model 3 RWD.">
 <style>
 :root{
-  --bg:#dae0e6; --card:#fff; --text:#1a1a1b; --muted:#6a6d70; --line:#e3e5e7;
-  --accent:#d93a00; --link:#0a5fb8; --soft:#f6f7f8; --code:#eef0f2; --flair:#e6f0fb; --flair-t:#0b4f94;
+  --bg:#faf8f4; --text:#22201c; --muted:#6f6a61; --line:#e4dfd5; --accent:#b4451f; --link:#1f5fa8;
+  --soft:#f1ede5; --code:#ece7dd;
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --bg:#0b0d0f; --card:#16191c; --text:#d7dadc; --muted:#8b9196; --line:#2a2e32;
-    --accent:#ff5a1f; --link:#6cb4ff; --soft:#1d2125; --code:#23282d; --flair:#16324d; --flair-t:#a9d2ff;
+    --bg:#15161a; --text:#dddad3; --muted:#928d83; --line:#2c2e35; --accent:#f08a5d; --link:#7fb6f5;
+    --soft:#1d1f25; --code:#262830;
   }
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);
-  font:16px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;
-  display:flex;align-items:center;gap:10px;font-weight:700}
-.top .dot{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
-  display:grid;place-items:center;font-size:11px}
-.top small{font-weight:400;color:var(--muted)}
-.wrap{max-width:820px;margin:20px auto;padding:0 16px}
-.post{background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;overflow:hidden}
-.votes{flex:0 0 48px;background:var(--soft);text-align:center;padding:14px 0;color:var(--muted);
-  font-weight:700;font-size:13px}
-.votes button{display:block;margin:0 auto;background:none;border:0;cursor:pointer;color:var(--muted);
-  font-size:20px;line-height:1;padding:4px}
-.votes button.on{color:var(--accent)}
-.main{flex:1;min-width:0;padding:14px 20px 8px}
-.meta{font-size:13px;color:var(--muted)}
-.meta b{color:var(--text)}
-h1{font-size:23px;line-height:1.3;margin:8px 0 10px;text-wrap:balance}
-.flair{display:inline-block;background:var(--flair);color:var(--flair-t);font-size:12px;font-weight:600;
-  border-radius:20px;padding:2px 10px;margin:0 6px 10px 0}
-h2{font-size:19px;margin:30px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
-h3{font-size:16px;margin:20px 0 6px}
-p{margin:0 0 14px}
-a{color:var(--link)}
-ul,ol{margin:0 0 14px;padding-left:24px}
-li{margin-bottom:4px}
-code{background:var(--code);border-radius:4px;padding:1px 5px;font:14px/1.4 Consolas,Menlo,monospace}
-blockquote{margin:0 0 14px;padding:8px 14px;border-left:4px solid var(--line);color:var(--muted);background:var(--soft);
-  border-radius:0 6px 6px 0}
-blockquote p:last-child{margin:0}
-.tldr{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-bottom:16px}
-.tldr p:last-child,.tldr ul:last-child{margin-bottom:0}
-figure{margin:0 0 16px}
-figure img{display:block;max-width:100%;max-height:560px;margin:0 auto;border-radius:8px;cursor:zoom-in;background:#000}
+  font:18px/1.7 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.site{border-bottom:1px solid var(--line)}
+.site div{max-width:720px;margin:0 auto;padding:16px 20px;font-size:14px;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:700;color:var(--muted)}
+.site b{color:var(--accent)}
+.wrap{max-width:720px;margin:0 auto;padding:44px 20px 20px}
+.kicker{font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--accent);margin:0 0 10px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;line-height:1.25;text-wrap:balance}
+h1{font-size:38px;margin:0 0 14px;letter-spacing:-.01em}
+.lede{font-size:21px;line-height:1.5;color:var(--muted);margin:0 0 18px}
+.byline{font-size:14px;color:var(--muted);margin:0 0 32px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.byline b{color:var(--text)}
+h2{font-size:28px;margin:52px 0 14px}
+h3{font-size:21px;margin:32px 0 10px}
+p{margin:0 0 18px}
+a{color:var(--link);text-underline-offset:3px}
+ul,ol{margin:0 0 18px;padding-left:26px}
+li{margin-bottom:6px}
+code{background:var(--code);border-radius:4px;padding:1px 6px;font:.85em/1.4 Consolas,Menlo,monospace}
+.tldr{background:var(--soft);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;
+  padding:18px 22px;margin:0 0 28px;font-size:16.5px}
+.tldr p{font-family:Georgia,serif;font-size:19px;margin-bottom:8px}
+.tldr ul:last-child{margin-bottom:0}
+figure{margin:26px 0}
+figure img{display:block;max-width:100%;max-height:600px;margin:0 auto;border-radius:6px;cursor:zoom-in}
 figure.wide img{max-height:none;width:100%}
-figure svg{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line)}
-figcaption{font-size:13.5px;color:var(--muted);text-align:center;margin-top:6px}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tbl{overflow-x:auto;margin-bottom:16px}
-table{border-collapse:collapse;width:100%;font-size:14.5px}
-th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
-th{background:var(--soft)}
+figure svg{display:block;width:100%;height:auto;border-radius:6px;border:1px solid var(--line)}
+figcaption{font-size:14px;line-height:1.45;color:var(--muted);text-align:center;margin-top:8px;font-style:italic}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:26px 0}
+.pair figure{margin:0}
+.tbl{overflow-x:auto;margin:0 0 22px}
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.45}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line)}
 td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
-pre{background:var(--code);border-radius:8px;padding:12px 14px;overflow-x:auto;font:13.5px/1.45 Consolas,Menlo,monospace;margin:0 0 16px}
-.bar{display:flex;flex-wrap:wrap;gap:6px 18px;border-top:1px solid var(--line);margin-top:22px;padding:10px 0;
-  font-size:13px;font-weight:700;color:var(--muted)}
-.src{font-size:13px;color:var(--muted);margin:14px 4px 40px}
+.src{max-width:720px;margin:40px auto 0;padding:22px 20px 60px;border-top:1px solid var(--line);
+  font-size:14px;color:var(--muted)}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;
   cursor:zoom-out;z-index:9;padding:12px}
 #lb.on{display:flex}
 #lb img{max-width:100%;max-height:100%}
 @media (max-width:600px){
-  .votes{display:none}.main{padding:12px 14px 6px}h1{font-size:20px}.pair{grid-template-columns:1fr}
+  body{font-size:17px}h1{font-size:29px}h2{font-size:24px}.lede{font-size:19px}
+  .wrap{padding-top:28px}.pair{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-<div class="top"><span class="dot">M3</span>Tesla Model 3 <small>· DIY &amp; mods</small></div>
-<div class="wrap">
-<article class="post">
-  <div class="votes">
-    <button id="up" aria-label="Upvote">▲</button><span id="score">•</span><button id="dn" aria-label="Downvote">▼</button>
-  </div>
-  <div class="main">
-    <div class="meta">Build log by <b>AlexAprm</b> · Nov 2026</div>
-    <h1>DIY: 10-channel DSP amp (Match UP 10DSP MK2) in a 2023 Model 3 RWD — no factory wires cut, and no low-voltage errors on wake-up [build log, parts 1–2]</h1>
-    <span class="flair">DIY / Mods</span><span class="flair">Audio</span><span class="flair">Long post</span>
+<header class="site"><div><b>Tesla Model 3</b> · build log</div></header>
+<main class="wrap">
+<article>
+    <p class="kicker">Car audio · DIY</p>
+    <h1>Installing a DSP amplifier in a 2023 Model 3 RWD without cutting a single factory wire</h1>
+    <p class="lede">A Match UP 10DSP MK2 on a custom board in the trunk, penthouse power that doesn't trip low-voltage errors on wake-up, and a plug-in T-harness. Parts 1 and 2 of the build.</p>
+    <p class="byline">By <b>AlexAprm</b> · November 2026</p>
 
     <div class="tldr">
       <p><b>TL;DR</b></p>
@@ -296,24 +286,17 @@ pre{background:var(--code);border-radius:8px;padding:12px 14px;overflow-x:auto;f
 
     <h2>What's next</h2>
     <p>That's pretty much it for the wiring. What's left is to put everything together for good, and then the fun part: tuning. I'll post that as a follow-up.</p>
-    <p>Happy to answer questions about the harness or the power module in the comments.</p>
-
-    <div class="bar"><span>💬 Comments</span><span>↗ Share</span><span>☆ Save</span></div>
-  </div>
 </article>
-<p class="src">Combined and translated from the original Russian build log on DRIVE2:
+</main>
+<footer class="src">Combined and translated from the original Russian build log on DRIVE2:
 <a href="https://www.drive2.ru/l/747983467798608061/">part 1</a> (14 Nov 2026) ·
-<a href="https://www.drive2.ru/l/748871048560133353/">part 2</a> (25 Nov 2026). Click any photo to enlarge.</p>
-</div>
+<a href="https://www.drive2.ru/l/748871048560133353/">part 2</a> (25 Nov 2026). Click any photo to enlarge.</footer>
 <div id="lb"><img alt=""></div>
 <script>
 var lb=document.getElementById('lb'),li=lb.querySelector('img');
 document.querySelectorAll('figure img').forEach(function(i){i.onclick=function(){li.src=i.src;lb.className='on'}});
 lb.onclick=function(){lb.className=''};
 document.onkeydown=function(e){if(e.key==='Escape')lb.className=''};
-var up=document.getElementById('up'),dn=document.getElementById('dn');
-up.onclick=function(){up.classList.toggle('on');dn.classList.remove('on')};
-dn.onclick=function(){dn.classList.toggle('on');up.classList.remove('on')};
 </script>
 </body>
 </html>
