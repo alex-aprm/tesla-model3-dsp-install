@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSP amp install in a 2023 Model 3 RWD — no factory wires cut</title>
+<style>
+:root{
+  --bg:#dae0e6; --card:#fff; --text:#1a1a1b; --muted:#6a6d70; --line:#e3e5e7;
+  --accent:#d93a00; --link:#0a5fb8; --soft:#f6f7f8; --code:#eef0f2; --flair:#e6f0fb; --flair-t:#0b4f94;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b0d0f; --card:#16191c; --text:#d7dadc; --muted:#8b9196; --line:#2a2e32;
+    --accent:#ff5a1f; --link:#6cb4ff; --soft:#1d2125; --code:#23282d; --flair:#16324d; --flair-t:#a9d2ff;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.top{background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;
+  display:flex;align-items:center;gap:10px;font-weight:700}
+.top .dot{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
+  display:grid;place-items:center;font-size:11px}
+.top small{font-weight:400;color:var(--muted)}
+.wrap{max-width:820px;margin:20px auto;padding:0 16px}
+.post{background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;overflow:hidden}
+.votes{flex:0 0 48px;background:var(--soft);text-align:center;padding:14px 0;color:var(--muted);
+  font-weight:700;font-size:13px}
+.votes button{display:block;margin:0 auto;background:none;border:0;cursor:pointer;color:var(--muted);
+  font-size:20px;line-height:1;padding:4px}
+.votes button.on{color:var(--accent)}
+.main{flex:1;min-width:0;padding:14px 20px 8px}
+.meta{font-size:13px;color:var(--muted)}
+.meta b{color:var(--text)}
+h1{font-size:23px;line-height:1.3;margin:8px 0 10px;text-wrap:balance}
+.flair{display:inline-block;background:var(--flair);color:var(--flair-t);font-size:12px;font-weight:600;
+  border-radius:20px;padding:2px 10px;margin:0 6px 10px 0}
+h2{font-size:19px;margin:30px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:20px 0 6px}
+p{margin:0 0 14px}
+a{color:var(--link)}
+ul,ol{margin:0 0 14px;padding-left:24px}
+li{margin-bottom:4px}
+code{background:var(--code);border-radius:4px;padding:1px 5px;font:14px/1.4 Consolas,Menlo,monospace}
+blockquote{margin:0 0 14px;padding:8px 14px;border-left:4px solid var(--line);color:var(--muted);background:var(--soft);
+  border-radius:0 6px 6px 0}
+blockquote p:last-child{margin:0}
+.tldr{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-bottom:16px}
+.tldr p:last-child,.tldr ul:last-child{margin-bottom:0}
+figure{margin:0 0 16px}
+figure img{display:block;max-width:100%;max-height:560px;margin:0 auto;border-radius:8px;cursor:zoom-in;background:#000}
+figure.wide img{max-height:none;width:100%}
+figure svg{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line)}
+figcaption{font-size:13.5px;color:var(--muted);text-align:center;margin-top:6px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tbl{overflow-x:auto;margin-bottom:16px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+pre{background:var(--code);border-radius:8px;padding:12px 14px;overflow-x:auto;font:13.5px/1.45 Consolas,Menlo,monospace;margin:0 0 16px}
+.bar{display:flex;flex-wrap:wrap;gap:6px 18px;border-top:1px solid var(--line);margin-top:22px;padding:10px 0;
+  font-size:13px;font-weight:700;color:var(--muted)}
+.src{font-size:13px;color:var(--muted);margin:14px 4px 40px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;
+  cursor:zoom-out;z-index:9;padding:12px}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:100%}
+@media (max-width:600px){
+  .votes{display:none}.main{padding:12px 14px 6px}h1{font-size:20px}.pair{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="top"><span class="dot">M3</span>Tesla Model 3 <small>· DIY &amp; mods</small></div>
+<div class="wrap">
+<article class="post">
+  <div class="votes">
+    <button id="up" aria-label="Upvote">▲</button><span id="score">•</span><button id="dn" aria-label="Downvote">▼</button>
+  </div>
+  <div class="main">
+    <div class="meta">Build log by <b>AlexAprm</b> · Nov 2026</div>
+    <h1>DIY: 10-channel DSP amp (Match UP 10DSP MK2) in a 2023 Model 3 RWD — no factory wires cut, and no low-voltage errors on wake-up [build log, parts 1–2]</h1>
+    <span class="flair">DIY / Mods</span><span class="flair">Audio</span><span class="flair">Long post</span>
+
+    <div class="tldr">
+      <p><b>TL;DR</b></p>
+      <ul>
+        <li><b>Car:</b> 2023 Model 3 RWD, base audio — no factory amplifier, no subwoofer, tweeters fitted but not wired.</li>
+        <li><b>DSP amp:</b> Match UP 10DSP MK2 (Audiotec Fischer), mounted on a carpeted plywood board in the rear quarter-panel cavity of the trunk, on three factory mounting points. Nothing cut or drilled.</li>
+        <li><b>Power:</b> from the penthouse (under the rear seat), fused. A <b>1&nbsp;Ω / 100&nbsp;W resistor</b> limits the inrush current when the car wakes up; an <b>80&nbsp;A solid-state relay</b> then bypasses the resistor. Without this the car throws a string of electrical errors.</li>
+        <li><b>Signal:</b> a home-made T-harness that plugs in between factory connectors <code>X171</code>, <code>X175</code>, <code>X936</code> and <code>X053</code>. Fully reversible. Pinout table below.</li>
+        <li><b>Status:</b> wiring is essentially done; final assembly and DSP tuning are next.</li>
+      </ul>
+    </div>
+
+    <p>Heads-up: this is a multi-part build and I don't know how many parts there will be. I work on it when I have free time, and there isn't much of that. This post combines the first two parts.</p>
+
+    <h3>The plan</h3>
+    <ol>
+      <li>Physically mount the processor somewhere solid</li>
+      <li>Give it power</li>
+      <li>Run wiring to the speakers and to the MCU audio signals</li>
+      <li>Tune the DSP</li>
+    </ol>
+    <p>Steps 1–3 are covered here. Step 4 will be its own post.</p>
+
+    <h2>1. Mounting the DSP</h2>
+    <p>My car has no factory amplifier and no subwoofer, so the cavity behind the trunk side trim (rear quarter panel) is empty. There's plenty of room and no trim needs to be cut.</p>
+    <p>I made a paper template of the space, cut the shape out of 10&nbsp;mm plywood, wrapped it in automotive carpet, and hung it on perforated steel mounting strips from the hardware store. It attaches to <b>three existing factory points</b>. It holds very well, with no wobble or rattle.</p>
+
+    <div class="pair">
+      <figure><img src="img/01.jpg" alt="Bare plywood board fitted in the trunk side cavity"><figcaption>The bare plywood, hung on three factory points with steel strip</figcaption></figure>
+      <figure><img src="img/02.jpg" alt="Plywood board wrapped in black carpet"><figcaption>Wrapped in carpet so it looks like it belongs there</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="img/03.jpg" alt="Carpeted board installed in the car"><figcaption>Board installed</figcaption></figure>
+      <figure><img src="img/04.jpg" alt="Match UP 10DSP MK2 screwed to the board"><figcaption>The DSP is screwed to the board on standoffs</figcaption></figure>
+    </div>
+
+    <h2>2. Power — and why Teslas need an inrush limiter</h2>
+    <p>From everything I've read, the best place to take power is the <b>penthouse</b> (the power electronics under the rear seat, where the DC-DC converter output is). But there's a catch.</p>
+    <p>In a normal car an amplifier is connected to the battery once and stays connected forever. Here it hangs off the DC-DC converter output, and <b>the car switches that off when it sleeps</b> and back on when it wakes. The amp has fairly large input capacitors, and every time power comes back they charge with a big current spike. The car sees that spike, doesn't like it, and lights up a garland of errors.</p>
+    <p>Another owner describes the problem in more detail here: <a href="https://www.reddit.com/r/TeslaModel3/s/5W4ZJjgtSP">reddit.com/r/TeslaModel3/s/5W4ZJjgtSP</a></p>
+
+    <h3>The fix: pre-charge resistor + bypass relay</h3>
+    <ul>
+      <li>A <b>1&nbsp;Ω, 100&nbsp;W</b> aluminium-housed resistor sits in series with the amp's +12&nbsp;V. With 1&nbsp;Ω in the way, the wake-up spike can't exceed roughly 15&nbsp;A, and the capacitors charge gently.</li>
+      <li>The amp can't run through the resistor permanently (at any real load the voltage would sag and the resistor would cook), so a <b>solid-state relay</b> (Heschen SSR-80DD, DC-switching, 80&nbsp;A) is wired in parallel with the resistor. Once it closes, the resistor is shorted out and the amp gets full current.</li>
+    </ul>
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="1000" height="440" fill="#ffffff"/>
+  <text x="24" y="34" font-size="19" font-weight="700" fill="#1a1a1b">Inrush limiter: pre-charge resistor with solid-state bypass relay</text>
+
+  <!-- power wires -->
+  <g fill="none" stroke="#d62b1f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M170 150 H215"/>
+    <path d="M285 150 H340"/>
+    <path d="M340 150 V95 H430"/>
+    <path d="M570 95 H660 V150"/>
+    <path d="M340 150 V215 H420"/>
+    <path d="M580 215 H660 V150"/>
+    <path d="M660 150 H705"/>
+    <path d="M775 150 H820"/>
+  </g>
+  <circle cx="340" cy="150" r="7" fill="#d62b1f"/>
+  <circle cx="660" cy="150" r="7" fill="#d62b1f"/>
+
+  <!-- ground wires -->
+  <g fill="none" stroke="#1a1a1b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M900 230 V330"/>
+    <path d="M540 290 V330"/>
+  </g>
+  <g stroke="#1a1a1b" stroke-width="4" stroke-linecap="round">
+    <path d="M876 330 H924 M884 341 H916 M892 352 H908"/>
+    <path d="M516 330 H564 M524 341 H556 M532 352 H548"/>
+  </g>
+  <text x="936" y="346" font-size="14" fill="#555">chassis</text>
+  <text x="576" y="346" font-size="14" fill="#555">ground</text>
+
+  <!-- control wire -->
+  <path d="M360 345 H460 V290" fill="none" stroke="#1769c4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="9 6"/>
+
+  <!-- source -->
+  <rect x="24" y="115" width="146" height="70" rx="8" fill="#fdeceb" stroke="#d62b1f" stroke-width="2"/>
+  <text x="97" y="145" font-size="16" font-weight="700" text-anchor="middle" fill="#1a1a1b">Penthouse +12 V</text>
+  <text x="97" y="166" font-size="13" text-anchor="middle" fill="#555">DC-DC output</text>
+
+  <!-- main fuse -->
+  <rect x="215" y="134" width="70" height="32" rx="6" fill="#fff" stroke="#1a1a1b" stroke-width="2"/>
+  <path d="M225 150 q10 -14 20 0 t20 0 h10" fill="none" stroke="#1a1a1b" stroke-width="2"/>
+  <text x="250" y="188" font-size="14" text-anchor="middle" fill="#555">main fuse</text>
+
+  <!-- resistor -->
+  <rect x="430" y="75" width="140" height="40" rx="5" fill="#f2c14e" stroke="#9a7412" stroke-width="2"/>
+  <text x="500" y="101" font-size="17" font-weight="700" text-anchor="middle" fill="#3a2c05">1 Ω / 100 W</text>
+  <text x="500" y="65" font-size="14" text-anchor="middle" fill="#555">pre-charge resistor</text>
+
+  <!-- SSR -->
+  <rect x="420" y="180" width="160" height="110" rx="8" fill="#eef1f4" stroke="#1a1a1b" stroke-width="2"/>
+  <text x="500" y="207" font-size="16" font-weight="700" text-anchor="middle" fill="#1a1a1b">Solid-state relay</text>
+  <text x="500" y="226" font-size="13" text-anchor="middle" fill="#555">SSR-80DD, 80 A DC</text>
+  <text x="432" y="240" font-size="12" fill="#d62b1f">load</text>
+  <text x="568" y="240" font-size="12" text-anchor="end" fill="#d62b1f">load</text>
+  <text x="460" y="282" font-size="14" font-weight="700" text-anchor="middle" fill="#1769c4">+</text>
+  <text x="540" y="282" font-size="14" font-weight="700" text-anchor="middle" fill="#1a1a1b">−</text>
+  <text x="500" y="268" font-size="12" text-anchor="middle" fill="#555">control</text>
+
+  <!-- trigger source -->
+  <rect x="150" y="315" width="210" height="60" rx="8" fill="#e8f1fb" stroke="#1769c4" stroke-width="2"/>
+  <text x="255" y="341" font-size="15" font-weight="700" text-anchor="middle" fill="#1a1a1b">Switched 12 V (trigger)</text>
+  <text x="255" y="361" font-size="13" text-anchor="middle" fill="#555">12 V socket circuit at X930</text>
+
+  <!-- inline fuse -->
+  <rect x="705" y="134" width="70" height="32" rx="6" fill="#fff" stroke="#1a1a1b" stroke-width="2"/>
+  <path d="M715 150 q10 -14 20 0 t20 0 h10" fill="none" stroke="#1a1a1b" stroke-width="2"/>
+  <text x="740" y="188" font-size="14" text-anchor="middle" fill="#555">inline fuse</text>
+
+  <!-- DSP -->
+  <rect x="820" y="110" width="160" height="120" rx="8" fill="#2a2d31" stroke="#1a1a1b" stroke-width="2"/>
+  <text x="900" y="165" font-size="16" font-weight="700" text-anchor="middle" fill="#fff">DSP amplifier</text>
+  <text x="900" y="186" font-size="13" text-anchor="middle" fill="#c9cdd2">Match UP 10DSP MK2</text>
+  <text x="830" y="140" font-size="13" font-weight="700" fill="#ff8a80">+12 V</text>
+  <text x="900" y="222" font-size="13" font-weight="700" text-anchor="middle" fill="#c9cdd2">GND</text>
+
+  <!-- legend -->
+  <text x="24" y="408" font-size="14" fill="#1a1a1b"><tspan font-weight="700">1.</tspan> Car wakes up: current reaches the amp only through the resistor, so its capacitors charge gently.</text>
+  <text x="24" y="428" font-size="14" fill="#1a1a1b"><tspan font-weight="700">2.</tspan> Switched 12 V appears: the relay closes and bypasses the resistor, giving the amp full current.</text>
+</svg><figcaption>Power module wiring</figcaption></figure>
+
+    <figure><img src="img/05.jpg" alt="Resistor and solid-state relay on a heatsink next to the DSP, on the bench"><figcaption>Power module on the bench: gold resistor on top, SSR on the heatsink, inline fuse at the bottom</figcaption></figure>
+
+    <p>The heatsink under the relay is mostly insurance; it also happens to be a convenient thing to bolt everything to. I think it turned out pretty tidy.</p>
+    <p>Every terminal was crimped with a proper crimping tool and then soldered. Crimp-vs-solder is close to a religious argument; my experience says do both. All the parts came from Amazon or AliExpress.</p>
+
+    <figure><img src="img/08.jpg" alt="DSP and power module mounted in the car"><figcaption>Installed in the car. At this point only the relay trigger wire and the audio harness were missing.</figcaption></figure>
+
+    <h3>What triggers the relay</h3>
+    <p>My first idea was to drive the relay from the amp's own <b>Remote Out</b>, so the amp would switch itself to full current once it was up. After thinking about it some more, I ran a separate wire from the <b>12&nbsp;V socket circuit</b> instead: it is only live when someone is in the car, which is exactly when I want the amp on full power.</p>
+    <p>The convenient place to pick it up is connector <code>X930</code> at the rear of the centre console. I already had an adapter plugged in there, so no splicing.</p>
+
+    <h3>Cable routing</h3>
+    <p>The thick power cable and the audio harness lie neatly next to the factory loom: under the rear seat backrest, then along the right-hand sill.</p>
+    <div class="pair">
+      <figure><img src="img/09.jpg" alt="Power cable and audio harness tied alongside the factory loom"><figcaption>Power cable (red) and my harness, zip-tied along the factory loom</figcaption></figure>
+      <figure><img src="img/10.jpg" alt="Fuse holder near the penthouse"><figcaption>Don't forget the fuse — as close to the source as possible</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="img/11.jpg" alt="Red factory low-voltage cable"><figcaption>The red one is the factory low-voltage cable</figcaption></figure>
+      <figure><img src="img/12.jpg" alt="Harness wrapped in cloth tape next to factory wiring"><figcaption>My harness is on the left, wrapped in cloth tape</figcaption></figure>
+    </div>
+    <p>Two things worth doing: wrap everything in <b>cloth (fleece) harness tape</b> so nothing buzzes against the body, and <b>twist every audio pair</b>.</p>
+
+    <h2>3. Signal harness — no cutting</h2>
+    <p>A huge stroke of luck: all the wiring diagrams are published at <a href="https://service.tesla.com">service.tesla.com</a>. No probing with a multimeter, no piecing things together from forum fragments.</p>
+    <p>There are four connectors where the signals I need are easiest to reach:</p>
+    <ul>
+      <li><code>X171</code> and <code>X175</code> — plug straight into the MCU (the car computer's built-in amplifier outputs).</li>
+      <li><code>X936</code> — in the sill; left-side speakers.</li>
+      <li><code>X053</code> — right front door connector; right-side speakers.</li>
+    </ul>
+    <p>On base-audio cars the tweeters are physically installed but not driven. Their wiring dead-ends at the door connector <code>X053</code> and the sill connector <code>X936</code>, which is why those two are in the list: the DSP feeds the tweeters from there.</p>
+
+    <h3>Where the connectors came from</h3>
+    <p>I didn't want to cut the factory wiring, so I ordered <b>two Chinese “speaker activation” harnesses</b> made for different revisions of the car — one comes with <code>X171</code> plugs, the other with <code>X175</code>. That was the quick and cheap route, because I couldn't find the mating half of <code>X175</code> for sale anywhere. I suspect it doesn't exist as a catalogue part and the Chinese vendors tool their own.</p>
+    <p>The same two harnesses also donated the male/female pairs for the <code>X936</code> and <code>X053</code> taps, so all four T-connectors come from them and nothing had to be sourced separately.</p>
+    <div class="pair">
+      <figure><img src="img/06.jpg" alt="Donor speaker activation harness with blue connector"><figcaption>Donor “speaker activation” harness — it has exactly the plugs I need</figcaption></figure>
+      <figure><img src="img/07.jpg" alt="Short pigtails from the DSP with labelled wires"><figcaption>DSP-side pigtails, every wire labelled</figcaption></figure>
+    </div>
+
+    <h3>How it's laid out</h3>
+    <p>Each tap is a male/female pair that goes <i>in between</i> a factory plug and its socket. The amplifier outputs from the MCU are intercepted and sent to the DSP inputs (green); the DSP outputs go back out toward the speakers (red).</p>
+    <figure class="wide"><img src="img/13.jpg" alt="Harness topology diagram"><figcaption>Topology: DSP end → 3&nbsp;m trunk → X936 branch → 1&nbsp;m → X171 / X175 / X053 branches</figcaption></figure>
+    <figure class="wide"><img src="img/14.jpg" alt="Full harness wiring diagram with pin numbers"><figcaption>Full wiring diagram. Pin numbers on the DSP connectors are arbitrary (my own numbering).</figcaption></figure>
+
+    <h3>Pinout (2023 Model 3 RWD, base audio — verify against the diagrams for your VIN)</h3>
+    <div class="tbl"><table>
+      <tr><th>Connector</th><th>Pins (+ / −)</th><th>Channel</th><th>DSP input (from MCU)</th><th>DSP output (to speaker)</th></tr>
+      <tr><td rowspan="2"><code>X171</code> (MCU)</td><td class="n">7 / 8</td><td>Right rear</td><td>✓</td><td>✓</td></tr>
+      <tr><td class="n">2 / 1</td><td>Centre</td><td>✓</td><td>✓</td></tr>
+      <tr><td rowspan="3"><code>X175</code> (MCU)</td><td class="n">7 / 8</td><td>Left rear</td><td colspan="2">not tapped here — left rear is taken at X936</td></tr>
+      <tr><td class="n">14 / 13</td><td>Right dash midrange</td><td>✓</td><td>✓</td></tr>
+      <tr><td class="n">9 / 10</td><td>Left dash midrange</td><td>✓</td><td>✓</td></tr>
+      <tr><td rowspan="3"><code>X936</code> (sill)</td><td class="n">15 / 1</td><td>Left door midbass</td><td>✓</td><td>✓</td></tr>
+      <tr><td class="n">4 / 18</td><td>Left tweeter</td><td>— (no factory signal)</td><td>✓</td></tr>
+      <tr><td class="n">14 / 26</td><td>Left rear</td><td>✓</td><td>✓</td></tr>
+      <tr><td rowspan="2"><code>X053</code> (right door)</td><td class="n">29 / 30</td><td>Right door midbass</td><td>✓</td><td>✓</td></tr>
+      <tr><td class="n">31 / 32</td><td>Right tweeter</td><td>— (no factory signal)</td><td>✓</td></tr>
+    </table></div>
+    <p>That adds up to <b>7 high-level inputs</b> (L/R midbass, L/C/R dash, L/R rear) and <b>9 amplified outputs</b> (the same seven plus two tweeters), so nine of the amp's ten channels are used and the tweeters finally get their own channels with their own crossover and time alignment.</p>
+
+    <figure class="wide"><img src="img/15.jpg" alt="Finished harness with white connectors"><figcaption>The finished harness</figcaption></figure>
+
+    <p>The test fit showed I'd missed the length by half a metre — on the long side. Well, too long beats too short :) There's plenty of space next to the processor to coil the slack.</p>
+
+    <h3>DSP end of the harness</h3>
+    <p>My plan is to end the harness in <b>two separate connectors, inputs and outputs</b>. Plug them into each other and the DSP is bypassed completely (car back to stock sound, handy for troubleshooting or service visits); it also lets me disconnect the outputs on their own.</p>
+    <p>The connector I ordered for that still hasn't arrived, so I've nearly made peace with buying loose pins and populating the DSP's own plug directly — it's an ordinary Molex. Amazon promises the pins tomorrow.</p>
+
+    <h2>Parts list</h2>
+    <div class="tbl"><table>
+      <tr><th>Part</th><th>Notes</th></tr>
+      <tr><td>Match UP 10DSP MK2</td><td>10-channel amplifier with built-in DSP, high-level inputs</td></tr>
+      <tr><td>10&nbsp;mm plywood + automotive carpet</td><td>Mounting board, cut from a paper template</td></tr>
+      <tr><td>Perforated steel mounting strip</td><td>Hangs the board on 3 factory points</td></tr>
+      <tr><td>1&nbsp;Ω 100&nbsp;W aluminium-housed resistor</td><td>Inrush (pre-charge) limiter</td></tr>
+      <tr><td>Heschen SSR-80DD solid-state relay + heatsink</td><td>DC-switching, 80&nbsp;A; bypasses the resistor</td></tr>
+      <tr><td>Fuse holders ×2</td><td>One near the penthouse, one inline at the power module</td></tr>
+      <tr><td>Power and ground cable, ring terminals, heat-shrink</td><td>Crimped and soldered</td></tr>
+      <tr><td>2 × “speaker activation” harnesses</td><td>Donors for all four T-connector pairs: X171, X175, X936 and X053 (two different car revisions)</td></tr>
+      <tr><td>Speaker wire, cloth harness tape, zip ties</td><td>All audio pairs twisted</td></tr>
+      <tr><td>Molex pins for the DSP plug</td><td>On the way</td></tr>
+    </table></div>
+
+    <h2>What's next</h2>
+    <p>That's pretty much it for the wiring. What's left is to put everything together for good, and then the fun part: tuning. I'll post that as a follow-up.</p>
+    <p>Happy to answer questions about the harness or the power module in the comments.</p>
+
+    <div class="bar"><span>💬 Comments</span><span>↗ Share</span><span>☆ Save</span></div>
+  </div>
+</article>
+<p class="src">Combined and translated from the original Russian build log on DRIVE2:
+<a href="https://www.drive2.ru/l/747983467798608061/">part 1</a> (14 Nov 2026) ·
+<a href="https://www.drive2.ru/l/748871048560133353/">part 2</a> (25 Nov 2026). Click any photo to enlarge.</p>
+</div>
+<div id="lb"><img alt=""></div>
+<script>
+var lb=document.getElementById('lb'),li=lb.querySelector('img');
+document.querySelectorAll('figure img').forEach(function(i){i.onclick=function(){li.src=i.src;lb.className='on'}});
+lb.onclick=function(){lb.className=''};
+document.onkeydown=function(e){if(e.key==='Escape')lb.className=''};
+var up=document.getElementById('up'),dn=document.getElementById('dn');
+up.onclick=function(){up.classList.toggle('on');dn.classList.remove('on')};
+dn.onclick=function(){dn.classList.toggle('on');up.classList.remove('on')};
+</script>
+</body>
+</html>
